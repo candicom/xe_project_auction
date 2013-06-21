@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="1.0">
+    <title xml:lang="ko">project auction</title>
+    <title xml:lang="en">project auction</title>
+    <description xml:lang="ko">
+        프로젝트 거래.
+    </description>
+    <description xml:lang="en">
+        project trade.
+    </description>
+    <version>1.0</version>
+    <date>2013-05-28</date>
+    <category>service</category>
+    <author email_address="kdm3843@gmail.com" link="anonytimes.com">
+        <name xml:lang="ko">anonytimes.com</name>
+        <name xml:lang="en">anonytimes.com</name>
+    </author>
+</module>

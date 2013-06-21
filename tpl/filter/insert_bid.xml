@@ -1,0 +1,23 @@
+<filter name="insert_bid" module="pa" act="procPaInsertBid" confirm_msg_code="confirm_insert_bid">
+    <form>
+        <node target="document_srl" required="true" />
+        <node target="message" required="true" minlength="1" />
+        <node target="bid_price" filter="number" required="true" />
+        <node target="currency" maxlength="45" />
+    </form>
+    <parameter>
+        <param name="mid" target="mid" />
+        <param name="document_srl" target="document_srl" />
+        <param name="bid_srl" target="bid_srl" />
+        <param name="message" target="message" />
+        <param name="bid_price" target="bid_price" />
+        <param name="currency" target="currency" />
+    </parameter>
+    <response callback_func="completeInsertBid">
+        <tag name="error" />
+        <tag name="message" />
+        <tag name="mid" />
+        <tag name="document_srl" />
+        <tag name="bid_srl" />
+    </response>
+</filter>

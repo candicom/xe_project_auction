@@ -1,0 +1,11 @@
+<query id="getBid" action="select">
+    <tables>
+        <table name="pa_bids" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="bid_srl" var="bid_srl" filter="number" notnull="notnull" />
+    </conditions>
+</query>

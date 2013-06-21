@@ -1,0 +1,299 @@
+<include target="_header.html" />
+<load target="jquery.validate.min.js" />
+<load target="messages_kr.js" />
+<script type="text/javascript">
+//@brief 폼 전송 전에 수행되는 로직.
+function before_submit()
+{
+    var is_valid = true;
+    // jquery validator 검증.
+    if(jQuery('#fo_write').valid())
+    {
+
+    }
+    else
+    {
+        jQuery('.error').eq(0).focus();
+        return false;
+    }
+
+    // bid_price 의 값이 budget의 범위 안에 존재하는지 체크
+    return is_valid;
+}
+
+(function($){
+
+    $(function(){
+
+//        // 한글 영문 숫자에 대한 정규표현식 검사. 다시 생각해보니 C# 과 같은 것도 있을 수 있고 그냥 아무거나 입력하도록.
+//        $.validator.addMethod("alpha_number_comma", function(value, element) {
+//            var filter = /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|A-Za-z0-9,]+$/gi
+//            return this.optional(element) || (filter.test(value))
+//        }, "한글 영문 숫자 콤마 만 입력하실 수 있습니다.");
+//
+//        $('#fo_write').validate({
+//            rules: {
+//                skill_required: {
+//                    alpha_number_comma: true
+//                }
+//            }
+//        });
+
+
+
+        // 예산 셀렉트 박스 옵션 리스트 초기화.
+        replace_budget_sel('fixed');
+
+        // 프로젝트 타입에 따른 예산 셀렉트 박스의 옵션 리스트 변경.
+        $('#project_type_sel').change(function(){
+            if($(this).find('option:selected').val()=='fixed') {
+                replace_budget_sel($(this).find('option:selected').val());
+            }
+            else if($(this).find('option:selected').val()=='fulltime') {
+                replace_budget_sel($(this).find('option:selected').val());
+            }
+            else {
+
+            }
+        });
+
+
+    });
+
+
+    // fixed_30000_250000, fixed_250000_750000, fixed_750000_1500000, fixed_1500000_3000000, fixed_3000000_5000000, fixed_over_5000000
+    // fulltime_300000_700000, fulltime_700000_1500000, fulltime_1500000_2500000, fulltime_2500000_4000000, fulltime_4000000_7000000, fulltime_over_7000000
+
+    var budget_fixed_list = new Array();
+    <!--@foreach($lang->budget_fixed_list as $key => $val)-->budget_fixed_list['{$key}'] = '{$val}';<!--@end-->
+    var budget_fulltime_list = new Array();
+    <!--@foreach($lang->budget_fulltime_list as $key => $val)-->budget_fulltime_list['{$key}'] = '{$val}';<!--@end-->
+
+    // @brief 프로젝트 타입에 따른 예산 셀렉트 박스의 옵션 리스트를 변경하는 합수.
+    function replace_budget_sel(project_type)
+    {
+        $('#budget_sel').find('option').detach();
+
+        //var fixed_option_list = ['fixed_30000_250000', 'fixed_250000_750000', 'fixed_750000_1500000', 'fixed_1500000_3000000', 'fixed_3000000_5000000', 'fixed_over_5000000'];
+        //var fulltime_option_list = ['fulltime_300000_700000', 'fulltime_700000_1500000', 'fulltime_1500000_2500000', 'fulltime_2500000_4000000', 'fulltime_4000000_7000000', 'fulltime_over_7000000'];
+        //var fixed_option_lang_list = ['{$lang->fixed_30000_250000}', '{$lang->fixed_250000_750000}', '{$lang->fixed_750000_1500000}', '{$lang->fixed_1500000_3000000}', '{$lang->fixed_3000000_5000000}', '{$lang->fixed_over_5000000}'];
+        //var fulltime_option_lang_list = ['{$lang->fulltime_300000_700000}', '{$lang->fulltime_700000_1500000}', '{$lang->fulltime_1500000_2500000}', '{$lang->fulltime_2500000_4000000}', '{$lang->fulltime_4000000_7000000}', '{$lang->fulltime_over_7000000}'];
+        if(project_type=='fixed') {
+            for(var key in budget_fixed_list) {
+                $("<option></option>").val(key).text(budget_fixed_list[key]).appendTo('#budget_sel');
+            }
+            $('#budget_desc').html('단기 프로젝트의 경우 대략적인 예산 범위를 선택해주세요.<br />예산/월급은 등록 이후 수정할 수 없습니다.');
+        }
+        else if (project_type=='fulltime'){
+            for(var key in budget_fulltime_list) {
+                $("<option></option>").val(key).text(budget_fulltime_list[key]).appendTo('#budget_sel');
+                $('#budget_desc').html('풀타임 프로젝트의 경우 대략적인 월급을 선택해주세요.<br />예산/월급은 등록 이후 수정할 수 없습니다.');
+            }
+        }
+        else {
+
+        }
+    }
+
+})(jQuery);
+</script>
+<form action="./" method="post" id="fo_write" onsubmit="if(before_submit()) return procFilter(this, window.insert); else return false;" class="pa_write">
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="content" value="{$oDocument->getContentText()}" />
+	<input type="hidden" name="document_srl" value="{$document_srl}" />
+	<div class="write_header">
+		<select name="category_srl" cond="$module_info->use_category=='Y'">
+			<option value="">{$lang->category}</option>
+			<option loop="$category_list => $val" disabled="disabled"|cond="!$val->grant" value="{$val->category_srl}" selected="selected"|cond="$val->grant&&$val->selected||$val->category_srl==$oDocument->get('category_srl')">
+				{str_repeat("&nbsp;&nbsp;",$val->depth)} {$val->title} ({$val->document_count})
+			</option>
+		</select>
+		<input cond="$oDocument->getTitleText()" type="text" name="title" class="iText" title="{$lang->title}" value="{htmlspecialchars($oDocument->getTitleText())}" />
+		<input cond="!$oDocument->getTitleText()" type="text" name="title" class="iText" title="{$lang->title}" />
+		<input cond="$grant->manager" type="checkbox" name="is_notice" value="Y" class="iCheck" checked="checked"|cond="$oDocument->isNotice()" id="is_notice" />
+		<label cond="$grant->manager" for="is_notice">{$lang->notice}</label>
+	</div>
+	
+	<!-- 프로젝트 관련 입력 필드 -->
+	<div class="exForm">
+    <table border="1" cellspacing="0" summary="Extra Form">
+        <tr><!-- week_1_2, week_2_4, month_1_2, month_2_4, month_over_6, year_over_1 -->
+            <th scope="row">{$lang->project_duration} </th>
+            <td>
+                <select name="project_duration">
+                    <option value="week_1_2" selected="selected"|cond="$project->project_duration=='week_1_2'">{$lang->project_duration_list['week_1_2']}</option>
+                    <option value="week_2_4" selected="selected"|cond="$project->project_duration=='week_2_4'">{$lang->project_duration_list['week_2_4']}</option>
+                    <option value="month_1_2" selected="selected"|cond="$project->project_duration=='month_1_2'">{$lang->project_duration_list['month_1_2']}</option>
+                    <option value="month_2_4" selected="selected"|cond="$project->project_duration=='month_2_4'">{$lang->project_duration_list['month_2_4']}</option>
+                    <option value="month_over_6" selected="selected"|cond="$project->project_duration=='month_over_6'">{$lang->project_duration_list['month_over_6']}</option>
+                    <option value="year_over_1" selected="selected"|cond="$project->project_duration=='year_over_1'">{$lang->project_duration_list['year_over_1']}</option>
+                </select>
+                <p>프로젝트가 시작해서 완료될 때까지 대략적으로 예상되는 기간입니다.</p>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{$lang->project_type} </th>
+            <td>
+                <!--@if(empty($project))-->
+                <select name="project_type" id="project_type_sel">
+                    <option value="fixed">{$lang->project_type_list['fixed']}</option>
+                    <option value="fulltime">{$lang->project_type_list['fulltime']}</option>
+                </select>
+                <p>
+                    월급제 형식으로 비용을 지불하면 풀타임이며, 프로젝트 기준으로 비용을 지불하면 단기 프로젝트입니다.<br />
+                    프로젝트 유형은 등록 이후 수정할 수 없습니다.
+                </p>
+                <!--@else-->
+                {$lang->project_type_list[$project->project_type]}
+                <p>
+                    월급제 형식으로 비용을 지불하면 풀타임이며, 프로젝트 기준으로 비용을 지불하면 단기 프로젝트입니다.
+                </p>
+                <!--@end-->
+
+            </td>
+        </tr>
+        <!-- fixed_30000_250000, fixed_250000_750000, fixed_750000_1500000, fixed_1500000_3000000, fixed_3000000_5000000, fixed_over_5000000-->
+        <!-- fulltime_300000_700000, fulltime_700000_1500000, fulltime_1500000_2500000, fulltime_2500000_4000000, fulltime_4000000_7000000, fulltime_over_7000000 -->
+        <tr>
+            <th scope="row">{$lang->budget} </th>
+            <td>
+                <!--@if(empty($project))-->
+                <select name="budget" id="budget_sel"></select> <p id="budget_desc"></p>
+                <!--@else-->
+                    <!--@if($project->project_type=='fixed')-->
+                        {$lang->budget_fixed_list[$project->budget]}
+                    <!--@elseif($project->project_type=='fulltime')-->
+                        {$lang->budget_fulltime_list[$project->budget]}
+                    <!--@end-->
+                <!--@end-->
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{$lang->skill_required} </th>
+            <td>
+                <input type="text" name="skill_required" value="{$project->skill_required}" id="skill_required" /> <p>프로젝트 수행시 요구되는 기술을 ,로 구분하여 입력해 주세요. (ex. PHP, Wordpress, Photoshop)</p>
+            </td>
+        </tr>
+
+        <!-- 새로 등록일 경우에는 무조건 OPEN 이므로 표시하지 않음. 설명글을 상단이나 하단에 표기해야함. -->
+        <tr cond="!empty($project)"><!-- OPEN,WORKING,COMPLETE,CANCEL,EXPIRE -->
+            <th scope="row">{$lang->project_status} </th>
+            <td>
+                <b style="margin-right:50px;">
+                <!--@if($project->project_status=='OPEN')-->
+                {$lang->project_status_list['OPEN']}
+                <!--@else if($project->project_status=='WORKING')-->
+                {$lang->project_status_list['WORKING']}
+                <!--@else if($project->project_status=='COMPLETE')-->
+                {$lang->project_status_list['COMPLETE']}
+                <!--@else if($project->project_status=='CANCEL')-->
+                {$lang->project_status_list['CANCEL']}
+                <!--@else if($project->project_status=='EXPIRE')-->
+                {$lang->project_status_list['EXPIRE']}
+                <!--@else-->
+                {$lang->project_status_list['OPEN']}
+                <!--@end-->
+                </b>
+                <button class="btn" onclick="if(confirm('정말로 변경하시겠습니까?')) doCallModuleAction('pa','procPaChangeProjectStatusWorking','{$project->document_srl}'); else return false;" cond="$project->project_status=='OPEN'">프로젝트 진행</button>
+                <button class="btn" onclick="if(confirm('정말로 변경하시겠습니까?')) doCallModuleAction('pa','procPaChangeProjectStatusOpen','{$project->document_srl}'); else return false;" cond="$project->project_status=='WORKING'">입찰가능 상태로 변경</button>
+                <button class="btn" onclick="if(confirm('정말로 변경하시겠습니까?')) doCallModuleAction('pa','procPaChangeProjectStatusCancel','{$project->document_srl}'); else return false;" cond="$project->project_status=='OPEN'||$project->project_status=='WORKING'">프로젝트 취소</button>
+                <button class="btn" onclick="if(confirm('정말로 변경하시겠습니까?')) doCallModuleAction('pa','procPaChangeProjectStatusComplete','{$project->document_srl}'); else return false;" cond="$project->project_status=='WORKING'">프로젝트 완료</button>
+                <p>프로젝트 취소, 완료 시에는 더이상 수정이 불가합니다.</p>
+                <p>완료 상태가 되면 다시 입찰가능상태로 복구할 수 없습니다. 새로운 프로젝트를 등록하셔야합니다.</p>
+            </td>
+        </tr>
+
+        <tr>
+            <th scope="row">{$lang->is_featured} </th>
+            <td>
+                <!--@if(empty($project))-->
+                <input type="radio" name="is_featured" id="is_featured_yes" value="Y" checked="checked"|cond="$project->is_featured=='Y'" /> <label for="is_featured_yes">등록</label>
+                <input type="radio" name="is_featured" id="is_featured_no" value="N" checked="checked"|cond="empty($project->is_featured)||$project->is_featured=='N'" /> <label for="is_featured_no">등록안함</label>
+                <p>
+                    추천 프로젝트로 등록시 게시목록의 최상단에 먼저 노출이 됩니다. <br />
+                    추천 프로젝트로 등록하려면 1000 포인트가 소요됩니다. 등록 이후 수정할 수 없습니다.
+                </p>
+                <!--@else-->
+                    <span cond="$project->is_featured=='Y'">추천 프로젝트로 등록됨.</span>
+                    <span cond="$project->is_featured!='Y'">추천 프로젝트가 아닙니다.</span>
+                    <p>추천 프로젝트로 등록시 게시목록의 최상단에 먼저 노출이 됩니다.</p>
+                <!--@end-->
+            </td>
+        </tr>
+
+        <tr>
+            <th scope="row">도움말 </th>
+            <td>
+                프로젝트 등록시 200포인트가 차감됩니다. 프로젝트에 입찰시 500포인트가 차감됩니다. <br />
+                최초 등록시 프로젝트는 7일간 게시됩니다. 7일 후 채택된 입찰자가 없으면 자동으로 기간만료 상태가 됩니다. <br />
+                진행중에는 7일이 지나지 않았을 경우 다시 입찰가능 상태로 변경이 가능합니다. <br />
+                입찰가능 상태를 제외한 진행중, 완료, 취소, 기간만료일 경우에는 입찰을 할 수 없습니다. <br />
+            </td>
+        </tr>
+    </table>
+    </div>
+    <!-- 프로젝트 관련 입력 필드 끝. -->
+	
+    <div class="exForm" cond="count($extra_keys)">
+		<table cond="count($extra_keys)" border="1" cellspacing="0" summary="Extra Form">
+			<caption><em>*</em> : {$lang->is_required}</caption>
+			<tr loop="$extra_keys=>$key,$val">
+				<th scope="row"><em cond="$val->is_required=='Y'">*</em> {$val->name}</th>
+				<td>{$val->getFormHTML()}</td>
+			</tr>
+		</table>
+	</div>
+    <div class="write_editor">
+		{$oDocument->getEditor()}
+	</div>
+	<div class="write_footer">
+		<div class="write_option">
+			<block cond="$grant->manager">
+				<input type="checkbox" name="title_bold" id="title_bold" class="iCheck" value="Y" checked="checked"|cond="$oDocument->get('title_bold')=='Y'" />
+				<label for="title_bold">{$lang->title_bold}</label>
+			</block>
+			<input cond="$module_info->secret=='Y'" type="checkbox" name="is_secret" class="iCheck" value="Y" checked="checked"|cond="$oDocument->isSecret()" id="is_secret" />
+			<label cond="$module_info->secret=='Y'" for="is_secret">{$lang->secret}</label>
+            <input type="checkbox" name="comment_status" class="iCheck" value="ALLOW" checked="checked"|cond="$oDocument->allowComment()" id="comment_status" />
+            <label for="comment_status">{$lang->allow_comment}</label>
+            <input type="checkbox" name="allow_trackback" class="iCheck" value="Y" checked="checked"|cond="$oDocument->allowTrackback()" id="allow_trackback" />
+            <label for="allow_trackback">{$lang->allow_trackback}</label>
+			<block cond="$is_logged">
+				<input type="checkbox" name="notify_message" class="iCheck" value="Y" checked="checked"|cond="$oDocument->useNotify()" id="notify_message" />
+				<label for="notify_message">{$lang->notify}</label>
+			</block>
+			<!--@if(is_array($status_list))-->
+				<!--@foreach($status_list AS $key=>$value)-->
+				<input type="radio" name="status" value="{$key}" id="{$key}" <!--@if($oDocument->get('status') == $key || ($key == 'PUBLIC' && !$document_srl))-->checked="checked"<!--@end--> /> 
+				<label for="{$key}">{$value}</label>
+				<!--@end-->
+			<!--@end-->
+		</div>
+		<div class="write_author">
+			<span class="item" cond="!$is_logged">
+				<label for="userName" class="iLabel">{$lang->writer}</label>
+				<input type="text" name="nick_name" id="userName" class="iText userName" style="width:80px" value="{htmlspecialchars($oDocument->get('nick_name'))}" />
+			</span>
+			<span class="item" cond="!$is_logged">
+				<label for="userPw" class="iLabel">{$lang->password}</label>
+				<input type="password" name="password" id="userPw" class="iText userPw" style="width:80px" />
+			</span>
+			<span class="item" cond="!$is_logged">
+				<label for="homePage" class="iLabel">{$lang->homepage}</label>
+				<input type="text" name="homepage" id="homePage" class="iText homePage"  style="width:140px"value="{htmlspecialchars($oDocument->get('homepage'))}" />
+			</span>
+			<span class="item">
+				<label for="tags" class="iLabel">{$lang->tag}: {$lang->about_tag}</label>
+				<input type="text" name="tags" id="tags" value="{htmlspecialchars($oDocument->get('tags'))}" class="iText" style="width:300px" title="Tag" />
+			</span>		
+		</div>
+		<div class="btnArea">
+			<input type="submit" value="{$lang->cmd_registration}" class="btn" />
+			<block cond="!$oDocument->isExists() || $oDocument->get('status') == 'TEMP'">
+			<button cond="$is_logged" class="btn" type="button" onclick="doDocumentSave(this);">{$lang->cmd_temp_save}</button>
+			<button cond="$is_logged" class="btn" type="button" onclick="doDocumentLoad(this);">{$lang->cmd_load}</button>
+			</block>
+		</div>
+	</div>
+</form>
+<include target="_footer.html" />

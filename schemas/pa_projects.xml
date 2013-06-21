@@ -1,0 +1,24 @@
+<table name="pa_projects">
+    <column name="document_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" />
+    <column name="module_srl" type="number" size="11" default="0" notnull="notnull" index="idx_module_srl" />
+    <column name="category_srl" type="number" size="11" default="0" notnull="notnull" index="idx_category_srl" />
+    <column name="member_srl" type="number" size="11" notnull="notnull" index="idx_member_srl" />
+	<column name="title" type="varchar" size="250" notnull="notnull" />
+    <column name="content" type="bigtext" notnull="notnull" />
+	<column name="project_duration" type="varchar" size="45" notnull="notnull" default="week_1_2" />
+    <!-- week_1_2, week_2_4, month_1_2, month_2_4, month_over_6, year_over_1 -->
+	<column name="project_type" type="varchar" size="45" notnull="notnull" default="fixed"/>
+    <!-- fixed, fulltime -->
+	<column name="budget" type="varchar" size="250" notnull="notnull" default="fixed_30000_250000"/>
+    <!-- fixed_30000_250000, fixed_250000_750000, fixed_750000_1500000, fixed_1500000_3000000, fixed_3000000_5000000, fixed_over_5000000-->
+    <!-- fulltime_300000_700000, fulltime_700000_1500000, fulltime_1500000_2500000, fulltime_2500000_4000000, fulltime_4000000_7000000, fulltime_over_7000000 -->
+	<column name="skill_required" type="varchar" size="250" />
+	<column name="project_status" type="varchar" size="45" default="OPEN" />
+    <!-- OPEN,WORKING,COMPLETE,CANCEL,EXPIRE -->
+	<column name="bid_count" type="number" size="11" default="0" notnull="notnull" index="idx_bid_count" />
+	<column name="bid_average" type="number" default="0" notnull="notnull" index="idx_bid_average" />
+    <column name="started" type="date" index="idx_started" />
+    <column name="ends" type="date" index="idx_ends" />
+    <column name="is_featured" type="char" size="1" default="N" notnull="notnull" index="idx_is_featured" />
+    <column name="is_deleted" type="char" size="1" default="N" notnull="notnull" />
+</table>

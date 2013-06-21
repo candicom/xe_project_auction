@@ -1,0 +1,46 @@
+<!--#include("_header.html")-->
+
+
+<!-- 카테고리 시작 -->
+<?php
+// debugPrint($key);
+// 132, 145, ... 카테고리 시리얼 
+// print_r($val);
+// stdClass Object ( [mid] => bwswork [module_srl] => 130 [category_srl] => 132 [parent_srl] => 0 [text] => 웹싸이트, IT & 소프트웨어 [title] => 웹싸이트, IT & 소프트웨어 [description] => [expand] => [color] => #0000ff [document_count] => 0 [depth] => 0 [child_count] => 6 [childs] => Array ( [0] => 145 [1] => 147 [2] => 149 [3] => 151 [4] => 153 [5] => 155 ) [grant] => 1 [selected] => [first] => 1 )
+// stdClass Object ( [mid] => bwswork [module_srl] => 130 [category_srl] => 145 [parent_srl] => 132 [text] => 디자인/시안/배너/상세 [title] => 디자인/시안/배너/상세 [description] => [expand] => [color] => #0000ff [document_count] => 0 [depth] => 1 [child_count] => 0 [childs] => Array ( ) [grant] => 1 [selected] => [first] => 1 )
+// stdClass Object ( [mid] => bwswork [module_srl] => 130 [category_srl] => 155 [parent_srl] => 132 [text] => 스킨(그누보드,XE,WP...) [title] => 스킨(그누보드,XE,WP...) [description] => [expand] => [color] => #0000ff [document_count] => 0 [depth] => 1 [child_count] => 0 [childs] => Array ( ) [grant] => 1 [selected] => [last] => 1 )
+// 
+?>
+
+<!--@if($module_info->use_category == "Y")-->
+<div class="category_list_wall">
+	{@$span_cnt=0;$su_parent_cnt=0;}
+	<!--@foreach($category_list as $val)-->
+		<!--@if($val->depth==0)-->
+            {@$su_parent_cnt++; $su_child_count = count($val->childs); $child_cnt=0;}
+			<!--@if($span_cnt%4==0)-->
+			<div class="pa-row">
+			<!--@end-->		
+			<div class="pa-span">
+				<ul class="unstyled">
+		<!--@end-->
+                    {@$child_cnt++;}
+					<li>{str_repeat("&nbsp;&nbsp;&nbsp;",$val->depth)}<a href="{getUrl('act','dispPaContent','category',$val->category_srl,'page','')}">{$val->title}</a> <span>({$val->document_count})</span></li>
+        <!--@if(($su_child_count+1)==$child_cnt)--><!--// 수퍼 카테고리도 뿌려주므로 -->
+				</ul>
+			</div>
+			{@$span_cnt++;}
+			<!--@if($span_cnt%4==0)-->
+			</div>
+			<!--@end-->
+		<!--@end-->
+	<!--@end-->
+	<!--@if($su_parent_cnt%4!=0)-->
+		</div>
+	<!--@end-->
+</div>
+<!--@end-->
+
+<!-- 카테고리 끝 -->
+
+<!--#include("_footer.html")-->

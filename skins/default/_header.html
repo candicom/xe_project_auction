@@ -1,0 +1,127 @@
+<load target="pa.default.css" />
+<load target="pa.default.js" type="body" />
+<!--@if($order_type == "desc")-->
+    {@ $order_type = "asc"; }
+<!--@else-->
+    {@ $order_type = "desc"; }
+<!--@end-->
+<block cond="!$module_info->duration_new = (int)$module_info->duration_new">{@ $module_info->duration_new = 12 }</block>
+{@ $cate_list = array(); $current_key = null; }
+<!--@foreach($category_list as $key=>$val)-->
+	<!--@if(!$val->depth)-->
+		{@
+			$cate_list[$key] = $val;
+			$cate_list[$key]->children = array();
+			$current_key = $key;
+		}
+	<!--@elseif($current_key)-->
+		{@ $cate_list[$current_key]->children[] = $val }
+	<!--@end-->
+<!--@end-->
+<div class="pa">
+
+
+<!-- 관리자 또는 타이틀 이미지가 있을 경우 -->
+{$module_info->header_text}
+<div class="pa_header" cond="$module_info->title_image || $grant->manager">
+	<h2 cond="$module_info->title_image"><a href="{getUrl('','mid',$mid)}"><img src="{$module_info->title_image}" alt="{$module_info->title_alt}" /></a></h2>
+	<a cond="$grant->manager" class="setup" href="{getUrl('act','dispPaAdminPaInfo')}" title="{$lang->cmd_setup}">{$lang->cmd_setup}</a>
+</div>
+<!-- 관리자 또는 타이틀 이미지가 있을 경우 끝. -->
+
+
+<!-- 설명 추가 -->
+<div style="margin-bottom:20px;">
+<!-- 
+프로젝트 등록시 200포인트가 차감됩니다. 프로젝트에 입찰시 500포인트가 차감됩니다. <br />
+ -->
+최초 등록시 프로젝트는 7일간 게시됩니다. 7일 후 채택된 입찰자가 없으면 자동으로 기간만료 상태가 됩니다. <br />
+진행중에는 7일이 지나지 않았을 경우 다시 입찰가능 상태로 변경이 가능합니다. <br />
+입찰가능 상태를 제외한 진행중, 완료, 취소, 기간만료일 경우에는 입찰을 할 수 없습니다. <br />
+수정 버튼을 클릭하시면 수정화면에서 입찰 가능 상태를 변경하실 수 있습니다.
+</div>
+<!-- 설명 추가 끝. -->
+
+<div class="flipmenu">
+<ul id="top_menu">
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaCategoryListWall')}">
+<span>카테고리 리스트</span>
+</a></li>
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaContent','sort_index','regdate','order_type','desc')}">
+<span>최근 등록된 프로젝트</span>
+</a></li>
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaExpiredSoon')}">
+<span>마감 하루 전 프로젝트</span>
+</a></li>
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaOrderbyLowbid')}">
+<span>입찰수 낮은순</span>
+</a></li>
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaFulltimeProject')}">
+<span>풀타임 프로젝트</span>
+</a></li>
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaFixedProject')}">
+<span>단기 프로젝트</span>
+</a></li>
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaRegisteredbymeProjectList')}">
+<span>내가 등록한 프로젝트</span>
+</a></li>
+<li style="height: 56px;"><a style="padding:0px;" href="{getUrl('','mid',$mid,'act','dispPaRegisteredbymeBidList')}">
+<span>내 입찰 정보</span>
+</a></li>
+</ul>
+</div>
+
+<script>
+var slideNav = (function($) {
+	
+	var spanHeight,
+		nav = $('#top_menu'),
+		lis = $('li', nav),
+		anchors = $('a', lis).css('padding', 0);
+		
+	$.each(anchors, function() {
+		var a = $(this),
+			val = a.text();
+			
+		a.html('<span>' + val + '</span> <span>' + val + '</span>')
+		 .parent('li')
+			.height(a.children('span:first').outerHeight())
+		 .end()
+		 .children('span:first')
+			.css('marginTop', 0) // strange for IE
+	});
+	
+	spanHeight = lis.eq(0).height();
+	
+	lis.hover(function() {
+		$(this).find('span:first').animate({
+			marginTop : '-' + spanHeight
+		}, { duration: 200, queue : false });
+	}, function() {
+		$(this).find('span:first').animate({
+			marginTop : 0
+		}, { duration: 200, queue: false });
+	});
+	
+})(jQuery);
+
+</script>
+
+<div class="category_select">
+
+<!-- 카테고리 셀렉트 -->
+	<!--@if($module_info->use_category == "Y")-->
+	<span class="jumpTo">
+		<select name="category">
+			<option value="">{$lang->category}</option>
+			<!--@foreach($category_list as $val)-->
+				<option value="{$val->category_srl}" <!--@if($category==$val->category_srl)-->selected="selected"<!--@end-->>{str_repeat("&nbsp;&nbsp;",$val->depth)} {$val->title} <!--@if($val->document_count)-->({$val->document_count})<!--@end--></option>
+			<!--@end-->
+		</select>
+		<button class="btn" name="go_button" id="go_button" onclick="doChangeCategory(); return false;">{$lang->cmd_move}</button>
+        <button class="btn" onclick="location.href='{getUrl('','mid',$mid,'act','dispPaWrite','category',$category)}'; return false;">{$lang->cmd_project_write}</button>
+	</span>
+	<!--@end-->
+<!-- 카테고리 셀렉트 끝. -->
+	
+</div>

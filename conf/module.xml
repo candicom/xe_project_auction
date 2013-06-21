@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+    <grants>
+        <grant name="list" default="guest">
+            <title xml:lang="ko">목록</title>
+            <title xml:lang="zh-CN">目录</title>
+            <title xml:lang="jp">リスト</title>
+            <title xml:lang="en">list</title>
+			<title xml:lang="vi">Danh sách</title>
+            <title xml:lang="es">Lista</title>
+            <title xml:lang="zh-TW">列表</title>
+            <title xml:lang="tr">Liste</title>
+        </grant>
+        <grant name="view" default="guest">
+            <title xml:lang="ko">열람</title>
+            <title xml:lang="zh-CN">查看</title>
+            <title xml:lang="jp">閲覧</title>
+            <title xml:lang="en">view</title>
+			<title xml:lang="vi">Xem</title>
+            <title xml:lang="es">Opinión</title>
+            <title xml:lang="zh-TW">檢視</title>
+            <title xml:lang="tr">görüş</title>
+        </grant>
+        <grant name="write_document" default="guest">
+            <title xml:lang="ko">글 작성</title>
+            <title xml:lang="zh-CN">发表新主题</title>
+            <title xml:lang="jp">書き込み作成</title>
+            <title xml:lang="en">write document</title>
+			<title xml:lang="vi">Gửi bài viết</title>
+            <title xml:lang="es">Escribir el documento</title>
+            <title xml:lang="zh-TW">發表主題</title>
+            <title xml:lang="tr">belge yaz</title>
+        </grant>
+        <grant name="write_comment" default="guest">
+            <title xml:lang="ko">댓글 작성</title>
+            <title xml:lang="zh-CN">发表评论</title>
+            <title xml:lang="jp">コメント作成</title>
+            <title xml:lang="en">write comment</title>
+			<title xml:lang="vi">Gửi bình luận</title>
+            <title xml:lang="es">Escribir comentario</title>
+            <title xml:lang="zh-TW">發表評論</title>
+            <title xml:lang="es">yorum yaz</title>
+        </grant>
+    </grants>
+    <permissions>
+        <permission action="dispPaAdminInsertPa" target="manager" />
+        <permission action="dispPaAdminPaInfo" target="manager" />
+        <permission action="dispPaAdminExtraVars" target="manager" />
+        <permission action="dispPaAdminPaAdditionSetup" target="manager" />
+        <permission action="dispPaAdminSkinInfo" target="manager" />
+
+        <permission action="procPaAdminInsertPa" target="manager" />
+        <permission action="procPaAdminUpdatePaFroBasic" target="manager" />
+        <permission action="procPaAdminSaveCategorySettings" target="manager" />
+
+        <permission action="getPaAdminSimpleSetup" target="manager" />
+    </permissions>
+    <actions>
+        <action name="dispPaCategoryListWall" type="view" />
+        <action name="dispPaExpiredSoon" type="view" />
+        <action name="dispPaOrderbyLowbid" type="view" />
+        <action name="dispPaFulltimeProject" type="view" />
+        <action name="dispPaFixedProject" type="view" />
+        <action name="dispPaRegisteredbymeProjectList" type="view" />
+        <action name="dispPaRegisteredbymeBidList" type="view" />
+
+        <action name="dispPaContent" type="view" index="true" />
+        <action name="dispPaNoticeList" type="view" />
+        <action name="dispPaContentList" type="view" />
+        <action name="dispPaContentView" type="view" />
+        <action name="dispPaCatogoryList" type="view" />
+        <action name="dispPaContentCommentList" type="view" />
+        <action name="dispPaContentFileList" type="view" />
+
+        <action name="dispPaTagList" type="view" />
+        <action name="dispPaWrite" type="view" />
+        <action name="dispPaDelete" type="view" />
+        <action name="dispPaWriteComment" type="view" />
+        <action name="dispPaReplyComment" type="view" />
+        <action name="dispPaModifyComment" type="view" />
+        <action name="dispPaDeleteComment" type="view" />
+        <action name="dispPaDeleteTrackback" type="view" />
+        <action name="dispPaMessage" type="view" />
+
+        <action name="procPaInsertDocument" type="controller" ruleset="insertDocument" />
+        <action name="procPaDeleteDocument" type="controller" />
+        <action name="procPaVoteDocument" type="controller" />
+        <action name="procPaInsertComment" type="controller" />
+        <action name="procPaDeleteComment" type="controller" />
+        <action name="procPaDeleteTrackback" type="controller" />
+        <action name="procPaVerificationPassword" type="controller" />
+        <action name="procPaDeleteFile" type="controller" />
+        <action name="procPaUploadFile" type="controller" />
+        <action name="procPaDownloadFile" type="controller" />
+
+        <action name="procPaChangeProjectStatusOpen" type="controller" standalone="true" />
+        <action name="procPaChangeProjectStatusWorking" type="controller" standalone="true" />
+        <action name="procPaChangeProjectStatusCommplete" type="controller" standalone="true" />
+        <action name="procPaChangeProjectStatusCancel" type="controller" standalone="true" />
+        <action name="procPaChangeProjectStatusExpire" type="controller" standalone="true" />
+        <action name="procPaInsertBid" type="controller" standalone="true" />
+        <action name="procPaDeleteBid" type="controller" standalone="true" />
+        <action name="procPaAwardBid" type="controller" standalone="true" />
+        <action name="procPaRevokeBid" type="controller" standalone="true" />        
+        
+        <action name="dispPaAdminContent" type="view" standalone="true" admin_index="true" menu_name="pa" menu_index="true" />
+        <action name="dispPaAdminPaInfo" type="view" standalone="true"  menu_name="pa" />
+        <action name="dispPaAdminExtraVars" type="view" standalone="true"  menu_name="pa" />
+        <action name="dispPaAdminPaAdditionSetup" type="view" standalone="true" menu_name="pa"  />
+        <action name="dispPaAdminInsertPa" type="view" standalone="true" setup_index="true" menu_name="pa"  />
+        <action name="dispPaAdminDeletePa" type="view" standalone="true" menu_name="pa"  />
+        <action name="dispPaAdminSkinInfo" type="view" standalone="true" menu_name="pa"  />
+        <action name="dispPaAdminMobileSkinInfo" type="view" standalone="true" menu_name="pa"  />
+        <action name="dispPaAdminGrantInfo" type="view" standalone="true" menu_name="pa"  />
+        <action name="dispPaAdminCategoryInfo" type="view" menu_name="pa"  />
+        <action name="procPaAdminInsertPa" type="controller" standalone="true" ruleset="insertPa" />
+        <action name="procPaAdminDeletePa" type="controller" standalone="true" />
+        <action name="procPaAdminUpdatePaFroBasic" type="controller" standalone="true" ruleset="insertPaForBasic" />
+        <action name="procPaAdminSaveCategorySettings" type="controller" standalone="true" ruleset="saveCategorySettings" />
+
+        <action name="getPaAdminSimpleSetup" type="model" standalone="true" simple_setup_index="true" />
+
+		<action name="dispPaCategory" type="mobile" />
+		<action name="getPaCommentPage" type="mobile" />
+    </actions>
+    <menus>
+        <menu name="pa" type="all">
+            <title xml:lang="en">Pa</title>
+            <title xml:lang="ko">Pa</title>
+            <title xml:lang="zh-CN">Pa</title>
+            <title xml:lang="jp">Pa</title>
+            <title xml:lang="es">Pa</title>
+            <title xml:lang="ru">Pa</title>
+            <title xml:lang="fr">Pa</title>
+            <title xml:lang="zh-TW">Pa</title>
+            <title xml:lang="vi">Pa</title>
+            <title xml:lang="mn">Pa</title>
+            <title xml:lang="tr">Pa</title>
+        </menu>
+    </menus>
+</module>

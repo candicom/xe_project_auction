@@ -1,0 +1,57 @@
+
+<!--#include("_header.html")-->
+
+
+<!--// 번호 프로젝트 메시지 입찰가 채택여부 등록일 -->
+<div class="pa_list" id="pa_list">
+	<table width="100%" border="1" cellspacing="0" summary="내 입찰 내역">
+		<thead>
+			<!-- LIST HEADER -->
+            <!--// display contents based on the type -->
+            <th scope="col">{$lang->no}</th>
+            <th scope="col" class="title">
+                {$lang->project}
+            </th>
+            <th scope="col">{$lang->message}</th>
+            <th scope="col">{$lang->bid_price}</th>
+            <th scope="col">{$lang->is_awarded}</th>
+            <th scope="col">{$lang->regdate}</th>
+			<!-- /LIST HEADER -->
+		</thead>
+		<tbody cond="empty($bids)">
+	        <tr>
+	            <td colspan="8">
+	                {$lang->no_bids}
+	            </td>
+	        </tr>
+		</tbody>
+		<tbody cond="!empty($bids)">
+			<!-- LIST no, title, author, time, lastReply, readNum, voteNum -->
+			<tr loop="$bids=>$no,$bid">
+	            <td class="num">{$no}</td>
+	            <td class="title">
+	                <a href="{getUrl('act','dispPaContent','document_srl',$bid->document_srl)}#bid_{$bid->bid_srl}">{$bid->title}</a>
+	            </td>
+	            <td class="recommend">{$bid->message}</td>
+	            <td class="reading">{$bid->bid_price}</td>
+	            <td class="reading">{$bid->is_awarded}</td>
+	            <td class="date">{zdate($bid->regdate,'Y-m-d H:i')}</td>
+			</tr>
+			<!-- /LIST -->
+		</tbody>
+	</table>
+</div>
+<div class="list_footer">
+	<div class="pagination" cond="!empty($projects)">
+		<a href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division)}" class="direction prev"><span></span><span></span> {$lang->first_page}</a> 
+		<block loop="$page_no=$page_navigation->getNextPage()">
+			<strong cond="$page==$page_no">{$page_no}</strong> 
+			<a cond="$page!=$page_no" href="{getUrl('page',$page_no,'document_srl','','division',$division,'last_division',$last_division)}">{$page_no}</a>
+		</block>
+		<a href="{getUrl('page',$page_navigation->last_page,'document_srl','','division',$division,'last_division',$last_division)}" class="direction next">{$lang->last_page} <span></span><span></span></a>
+	</div>
+</div>
+
+
+<!--#include("_footer.html")-->
+

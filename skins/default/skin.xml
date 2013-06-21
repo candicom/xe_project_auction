@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">Project Auction Default</title>
+    <description xml:lang="ko">Project Auction 기본 스킨.</description>
+    <version>1.0</version>
+    <date>2010-12-24</date>
+    <author email_address="kdm3843@gmail.com" link="http://golagola.net/">
+        <name xml:lang="ko">kimdongmin</name>
+    </author>
+    <license>commercial</license>
+    <extra_vars>
+        <var name="title_image" type="image">
+            <title xml:lang="ko">Project Auction 제목 이미지</title>
+			<description xml:lang="ko">작성하면 화면에 표시 됨</description>
+        </var>
+        <var name="title_alt" type="text">
+            <title xml:lang="ko">Project Auction 제목 이미지 alt</title>
+			<description xml:lang="ko">게시판 제목 이미지 대체 텍스트</description>
+        </var>
+    </extra_vars>
+</skin>
+

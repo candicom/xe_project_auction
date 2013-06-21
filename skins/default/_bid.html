@@ -1,0 +1,139 @@
+
+<div class="feedback bid" id="bid">
+	<div class="fbHeader">
+		<h2>{$lang->bid} <em>{count($bids)}</em> &nbsp;&nbsp; {$lang->bid_average} <em>{$project->bid_average}</em></h2>
+	</div>
+	<ul cond="!empty($bids)" class="fbList">
+		<li loop="$bids=>$key,$bid" class="fbItem" id="bid_{$bid->bid_srl}">
+			<div class="fbMeta">
+				<img cond="$bid->profile_image" src="{$bid->profile_image}" alt="Profile" class="profile" />
+				<span cond="!$bid->profile_image" class="profile"></span>
+				<h3 class="author">
+					<a cond="!$bid->member_srl && $bid->homepage" href="{$bid->homepage}">{$bid->nick_name}</a>
+					<strong cond="!$bid->member_srl && !$bid->homepage">{$bid->nick_name()}</strong>
+					<a cond="$bid->member_srl" href="#popup_menu_area" class="member_{$bid->member_srl}" onclick="return false">{$bid->nick_name}</a>
+				</h3>
+				<p class="time">{zdate($bid->regdate,'Y-m-d H:i:s')}</p>
+			</div>
+			{$lang->bid_price} : {$bid->bid_price} <!--@if($bid->currency=='WON')-->{$lang->won}<!--@elseif($bid->currency=='DOLLAR')-->{$lang->dollar}<!--@end-->
+			{$bid->message}
+			<p class="action">
+				<a cond="$bid->member_srl==$logged_info->member_srl || $grant->manager" href="#" class="delete" onclick="if(confirm('정말로 변경하시겠습니까?')) doCallModuleAction('pa','procPaDeleteBid','{$bid->bid_srl}'); else return false;">{$lang->cmd_bid_cancel}</a>
+				<!--@if($oDocument->isGranted())-->
+				<a cond="$bid->is_awarded!='Y'" href="#" class="modify" onclick="if(confirm('정말로 변경하시겠습니까?')) doCallModuleAction('pa','procPaAwardBid','{$bid->bid_srl}'); else return false;">{$lang->cmd_bid_award}</a>
+				<a cond="$bid->is_awarded=='Y'" href="#" class="delete" onclick="if(confirm('정말로 변경하시겠습니까?')) doCallModuleAction('pa','procPaRevokeBid','{$bid->bid_srl}'); else return false;">{$lang->cmd_bid_revoke}</a>
+				<!--@end-->
+			</p>
+			<!--@if($bid->is_awarded=='Y')-->
+	            <img src="awarded_30x30.png" style="position:absolute;bottom:10px;right:10px;" />
+	        <!--@end-->
+		</li>
+	</ul>
+	
+
+
+
+    <!--@if(!$is_logged)-->
+        입찰을 하기위해서는 <a href="{getUrl('act','dispMemberLoginForm')}">로그인</a>이 필요합니다.
+    <!--@else if($logged_info->member_srl==$project->member_srl)-->
+        자신의 프로젝트에는 입찰하실 수 없습니다.
+    <!--@else if($project->project_status!='OPEN')-->
+        현재 입찰가능 상태가 아니므로 입찰하실 수 없습니다.
+    <!--@else if($is_already_bid)-->
+        이미 입찰에 참여하셨습니다.
+    <!--@else-->
+
+	<load target="jquery.validate.min.js" />
+	<load target="messages_kr.js" />
+
+    {@ $budget_arr = explode('_', $project->budget);}
+    <!--@if($budget_arr[1]=='over')-->
+        {@
+            $budget_min = $budget_arr[2];
+            $budget_max = 10000000000;
+        }
+    <!--@else-->
+        {@
+            $budget_min = $budget_arr[1];
+            $budget_max = $budget_arr[2];
+        }
+    <!--@end-->
+
+
+    <script type="text/javascript">
+        jQuery(function($){
+            $('#fo_bid').validate({
+                rules: {
+                    bid_price: {
+                        required: true,
+                        number: true,
+                        range: [{$budget_min},{$budget_max}]
+                    }
+                }
+            });
+        });
+
+        function before_submit_bid()
+        {
+            var is_valid = true;
+            // jquery validator 검증.
+            if(jQuery('#fo_bid').valid())
+            {
+
+            }
+            else
+            {
+                jQuery('.error').eq(0).focus();
+                return false;
+            }
+
+            // bid_price 의 값이 budget의 범위 안에 존재하는지 체크
+            return is_valid;
+        }
+    </script>
+
+    <style type="text/css">
+        /* 하단에 오류 메시지를 뿌려주는 css */
+        input.error, textarea.error{
+            border:1px dashed red;
+        }
+        label.error{
+            display:block;
+            color:red;
+        }
+        #fo_bid dd {
+            float:left;
+        }
+    </style>
+
+    <form action="./" method="post" onsubmit="if(before_submit_bid()) return procFilter(this, insert_bid); else return false;" id="fo_bid" class="write_comment">
+        <input type="hidden" name="mid" value="{$mid}" />
+        <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+        <input type="hidden" name="bid_srl" value="" />
+        <input type="hidden" name="currency" value="WON" />
+        <div class="editor">
+            <textarea style="width:80%;height:80px;" name="message"></textarea>
+            <img src="{$logged_info->profile_image->src}" style="border:4px solid #CCCCCC;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;" cond="$logged_info->profile_image->src"/>
+        </div>
+        <div class="write_author">
+	        <!--
+	        <span class="item">
+	            <select name="currency" class="span2">
+	                <option value="WON">{$lang->won}</option>
+	                <option value="DOLLAR">{$lang->dollar}</option>
+	            </select>
+	        </span>
+	        -->
+            <label for="bid_price" class="iLabel">{$lang->bid_price} :
+            <input type="text" name="bid_price" id="bid_price" />
+        </div>
+        <div class="btnArea">
+            <input class="btn" type="submit" value="{$lang->cmd_bid_registration}" />
+        </div>
+        
+    </form>
+    <!--@end-->
+
+</div>
+
+

@@ -1,0 +1,12 @@
+<query id="getProject" action="select">
+    <tables>
+        <table name="pa_projects" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="document_srl" var="document_srl" filter="number" notnull="notnull" />
+        <condition operation="equal" column="is_deleted" default="N" pipe="and" />
+    </conditions>
+</query>

@@ -1,0 +1,8 @@
+<query id="deleteBid" action="delete" priority="LOW">
+    <tables>
+        <table name="pa_bids" />
+    </tables>
+    <conditions>
+        <condition operation="equal" column="bid_srl" var="bid_srl" filter="number" notnull="notnull" />
+    </conditions>
+</query>

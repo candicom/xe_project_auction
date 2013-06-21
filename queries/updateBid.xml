@@ -1,0 +1,20 @@
+<query id="updateBid" action="update" priority="LOW">
+    <tables>
+        <table name="pa_bids" />
+    </tables>
+    <columns>
+        <column name="bid_srl" var="bid_srl" filter="number" notnull="notnull" />
+        <column name="document_srl" var="document_srl" filter="number" notnull="notnull" />
+        <column name="member_srl" var="member_srl" filter="number" notnull="notnull" />
+        <column name="message" var="message" notnull="notnull" />
+        <column name="bid_price" var="bid_price" filter="number" default="0" notnull="notnull" />
+        <column name="regdate" var="regdate" default="curdate()" notnull="notnull" />
+        <column name="is_awarded" var="is_awarded" default="N" notnull="notnull" />
+        <column name="currency" var="currency" minlength="1" maxlength="45" notnull="notnull" default="WON"/>
+        <column name="ipaddress" var="ipaddress" default="ipaddress()" />
+        <column name="list_order" var="list_order" default="0" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="bid_srl" var="bid_srl" filter="number" notnull="notnull" />
+    </conditions>
+</query>

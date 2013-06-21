@@ -1,0 +1,20 @@
+<query id="getProjectkListByProjectType" action="select">
+    <tables>
+        <table name="pa_projects" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="module_srl" var="module_srl" filter="number" notnull="notnull" />
+        <condition operation="equal" column="is_deleted" default="N" pipe="and" />
+        <condition operation="equal" column="member_srl" var="member_srl" default="null" pipe="and" />
+        <condition operation="in" column="project_status" var="project_status" notnull="notnull" default="OPEN" pipe="and" />
+    </conditions>
+    <navigation>
+        <index var="sort_index" default="list_order" order="order_type" />
+        <list_count var="list_count" default="20" />
+        <page_count var="page_count" default="10" />
+        <page var="page" default="1" />
+    </navigation>
+</query>
